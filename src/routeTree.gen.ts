@@ -19,6 +19,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedDashboardHistoryRouteImport } from './routes/_authenticated/dashboard.history'
 import { Route as AuthenticatedDashboardScanRouteImport } from './routes/_authenticated/dashboard.scan'
+import { Route as AuthenticatedDashboardReportIdRouteImport } from './routes/_authenticated/dashboard.report.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -72,6 +73,12 @@ const AuthenticatedDashboardScanRoute =
     path: '/scan',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardReportIdRoute =
+  AuthenticatedDashboardReportIdRouteImport.update({
+    id: '/report/$id',
+    path: '/report/$id',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
   '/dashboard/scan': typeof AuthenticatedDashboardScanRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/dashboard/report/$id': typeof AuthenticatedDashboardReportIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -93,6 +101,7 @@ export interface FileRoutesByTo {
   '/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
   '/dashboard/scan': typeof AuthenticatedDashboardScanRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/dashboard/report/$id': typeof AuthenticatedDashboardReportIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -106,6 +115,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
   '/_authenticated/dashboard/scan': typeof AuthenticatedDashboardScanRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/_authenticated/dashboard/report/$id': typeof AuthenticatedDashboardReportIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/dashboard/history'
     | '/dashboard/scan'
     | '/dashboard/'
+    | '/dashboard/report/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/dashboard/history'
     | '/dashboard/scan'
     | '/dashboard'
+    | '/dashboard/report/$id'
   id:
     | '__root__'
     | '/'
@@ -141,6 +153,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/history'
     | '/_authenticated/dashboard/scan'
     | '/_authenticated/dashboard/'
+    | '/_authenticated/dashboard/report/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardScanRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/report/$id': {
+      id: '/_authenticated/dashboard/report/$id'
+      path: '/report/$id'
+      fullPath: '/dashboard/report/$id'
+      preLoaderRoute: typeof AuthenticatedDashboardReportIdRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
   }
 }
 
@@ -231,6 +251,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardHistoryRoute: typeof AuthenticatedDashboardHistoryRoute
   AuthenticatedDashboardScanRoute: typeof AuthenticatedDashboardScanRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+  AuthenticatedDashboardReportIdRoute: typeof AuthenticatedDashboardReportIdRoute
 }
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
@@ -238,6 +259,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardHistoryRoute: AuthenticatedDashboardHistoryRoute,
     AuthenticatedDashboardScanRoute: AuthenticatedDashboardScanRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+    AuthenticatedDashboardReportIdRoute: AuthenticatedDashboardReportIdRoute,
   }
 
 const AuthenticatedDashboardRouteWithChildren =
