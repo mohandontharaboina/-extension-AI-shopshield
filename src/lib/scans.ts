@@ -63,7 +63,7 @@ export async function runScan(rawUrl: string, userId: string): Promise<ScanRow> 
       https_enabled: analysis.httpsEnabled,
       ai_explanation: analysis.aiExplanation,
       recommendation: analysis.recommendation,
-      details: analysis as unknown as Record<string, unknown>,
+      details: JSON.parse(JSON.stringify(analysis)),
     })
     .select("*")
     .single();
