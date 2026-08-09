@@ -6,7 +6,7 @@ import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 
-const links = [
+const links: { label: string; to: "/" | "/extension"; hash?: string }[] = [
   { label: "Home", to: "/" as const },
   { label: "Features", to: "/" as const, hash: "features" },
   { label: "How It Works", to: "/" as const, hash: "how-it-works" },
