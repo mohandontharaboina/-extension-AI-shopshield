@@ -27,7 +27,8 @@ function ReportsPage() {
   const safeRate = scans.length ? Math.round(((scans.length - flagged) / scans.length) * 100) : 0;
 
   const threatCounts = scans.reduce<Record<string, number>>((acc, scan) => {
-    for (const threat of scan.details?.detectedThreats ?? []) {
+    const threats = (scan.details?.["detectedThreats"] ?? []) as string[];
+    for (const threat of threats) {
       acc[threat] = (acc[threat] ?? 0) + 1;
     }
     return acc;

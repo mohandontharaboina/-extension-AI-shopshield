@@ -18,6 +18,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedDashboardHistoryRouteImport } from './routes/_authenticated/dashboard.history'
+import { Route as AuthenticatedDashboardReportsRouteImport } from './routes/_authenticated/dashboard.reports'
 import { Route as AuthenticatedDashboardScanRouteImport } from './routes/_authenticated/dashboard.scan'
 import { Route as AuthenticatedDashboardReportIdRouteImport } from './routes/_authenticated/dashboard.report.$id'
 
@@ -67,6 +68,12 @@ const AuthenticatedDashboardHistoryRoute =
     path: '/history',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardReportsRoute =
+  AuthenticatedDashboardReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardScanRoute =
   AuthenticatedDashboardScanRouteImport.update({
     id: '/scan',
@@ -88,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
+  '/dashboard/reports': typeof AuthenticatedDashboardReportsRoute
   '/dashboard/scan': typeof AuthenticatedDashboardScanRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/report/$id': typeof AuthenticatedDashboardReportIdRoute
@@ -99,6 +107,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
+  '/dashboard/reports': typeof AuthenticatedDashboardReportsRoute
   '/dashboard/scan': typeof AuthenticatedDashboardScanRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/report/$id': typeof AuthenticatedDashboardReportIdRoute
@@ -113,6 +122,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/_authenticated/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
+  '/_authenticated/dashboard/reports': typeof AuthenticatedDashboardReportsRoute
   '/_authenticated/dashboard/scan': typeof AuthenticatedDashboardScanRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/dashboard/report/$id': typeof AuthenticatedDashboardReportIdRoute
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/dashboard'
     | '/dashboard/history'
+    | '/dashboard/reports'
     | '/dashboard/scan'
     | '/dashboard/'
     | '/dashboard/report/$id'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/dashboard/history'
+    | '/dashboard/reports'
     | '/dashboard/scan'
     | '/dashboard'
     | '/dashboard/report/$id'
@@ -151,6 +163,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_authenticated/dashboard'
     | '/_authenticated/dashboard/history'
+    | '/_authenticated/dashboard/reports'
     | '/_authenticated/dashboard/scan'
     | '/_authenticated/dashboard/'
     | '/_authenticated/dashboard/report/$id'
@@ -230,6 +243,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardHistoryRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/reports': {
+      id: '/_authenticated/dashboard/reports'
+      path: '/reports'
+      fullPath: '/dashboard/reports'
+      preLoaderRoute: typeof AuthenticatedDashboardReportsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/scan': {
       id: '/_authenticated/dashboard/scan'
       path: '/scan'
@@ -249,6 +269,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardHistoryRoute: typeof AuthenticatedDashboardHistoryRoute
+  AuthenticatedDashboardReportsRoute: typeof AuthenticatedDashboardReportsRoute
   AuthenticatedDashboardScanRoute: typeof AuthenticatedDashboardScanRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedDashboardReportIdRoute: typeof AuthenticatedDashboardReportIdRoute
@@ -257,6 +278,7 @@ interface AuthenticatedDashboardRouteChildren {
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
     AuthenticatedDashboardHistoryRoute: AuthenticatedDashboardHistoryRoute,
+    AuthenticatedDashboardReportsRoute: AuthenticatedDashboardReportsRoute,
     AuthenticatedDashboardScanRoute: AuthenticatedDashboardScanRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
     AuthenticatedDashboardReportIdRoute: AuthenticatedDashboardReportIdRoute,
