@@ -14,7 +14,128 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      risk_indicators: {
+        Row: {
+          category: string
+          created_at: string
+          detail: string | null
+          id: string
+          name: string
+          scan_id: string
+          status: string
+          user_id: string
+          weight: number
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          name: string
+          scan_id: string
+          status?: string
+          user_id: string
+          weight?: number
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          name?: string
+          scan_id?: string
+          status?: string
+          user_id?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "risk_indicators_scan_id_fkey"
+            columns: ["scan_id"]
+            isOneToOne: false
+            referencedRelation: "website_scans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      website_scans: {
+        Row: {
+          ai_explanation: string | null
+          classification: string
+          created_at: string
+          details: Json
+          domain: string
+          domain_age_days: number | null
+          https_enabled: boolean
+          id: string
+          recommendation: string | null
+          risk_score: number
+          trust_score: number
+          url: string
+          user_id: string
+          website_name: string | null
+        }
+        Insert: {
+          ai_explanation?: string | null
+          classification?: string
+          created_at?: string
+          details?: Json
+          domain: string
+          domain_age_days?: number | null
+          https_enabled?: boolean
+          id?: string
+          recommendation?: string | null
+          risk_score?: number
+          trust_score?: number
+          url: string
+          user_id: string
+          website_name?: string | null
+        }
+        Update: {
+          ai_explanation?: string | null
+          classification?: string
+          created_at?: string
+          details?: Json
+          domain?: string
+          domain_age_days?: number | null
+          https_enabled?: boolean
+          id?: string
+          recommendation?: string | null
+          risk_score?: number
+          trust_score?: number
+          url?: string
+          user_id?: string
+          website_name?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
