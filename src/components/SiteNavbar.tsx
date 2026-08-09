@@ -7,11 +7,11 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 
 const links = [
-  { label: "Home", to: "/" as const, hash: undefined },
+  { label: "Home", to: "/" as const },
   { label: "Features", to: "/" as const, hash: "features" },
   { label: "How It Works", to: "/" as const, hash: "how-it-works" },
   { label: "Security", to: "/" as const, hash: "security" },
-  { label: "Extension", to: "/extension" as const, hash: undefined },
+  { label: "Extension", to: "/extension" as const },
 ];
 
 export function SiteNavbar() {
@@ -30,7 +30,7 @@ export function SiteNavbar() {
             <Link
               key={link.label}
               to={link.to}
-              hash={link.hash}
+              {...(link.hash ? { hash: link.hash } : {})}
               className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             >
               {link.label}
@@ -77,7 +77,7 @@ export function SiteNavbar() {
               <Link
                 key={link.label}
                 to={link.to}
-                hash={link.hash}
+                {...(link.hash ? { hash: link.hash } : {})}
                 onClick={() => setOpen(false)}
                 className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
               >
