@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/Logo";
+import { PasswordInput } from "@/components/PasswordInput";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/signup")({
@@ -117,9 +118,8 @@ function SignupPage() {
 
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 autoComplete="new-password"
                 placeholder="At least 8 characters"
                 value={password}

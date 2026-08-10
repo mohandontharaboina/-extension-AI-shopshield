@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/Logo";
+import { PasswordInput } from "@/components/PasswordInput";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/reset-password")({
@@ -75,9 +76,8 @@ function ResetPasswordPage() {
           <form className="mt-6 space-y-4" onSubmit={onSubmit} noValidate>
             <div className="space-y-2">
               <Label htmlFor="password">New password</Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -87,9 +87,8 @@ function ResetPasswordPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm">Confirm password</Label>
-              <Input
+              <PasswordInput
                 id="confirm"
-                type="password"
                 autoComplete="new-password"
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
