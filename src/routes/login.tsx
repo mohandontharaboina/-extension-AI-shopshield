@@ -8,7 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/Logo";
 import { PasswordInput } from "@/components/PasswordInput";
+import { SocialAuthButtons } from "@/components/SocialAuthButtons";
 import { supabase } from "@/integrations/supabase/client";
+
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -75,7 +77,20 @@ function LoginPage() {
             Access your scan history and risk reports.
           </p>
 
-          <form className="mt-6 space-y-4" onSubmit={onSubmit} noValidate>
+          <div className="mt-6">
+            <SocialAuthButtons label="Sign in with Google" />
+          </div>
+
+          <div className="my-6 flex items-center gap-3">
+            <span className="h-px flex-1 bg-border" />
+            <span className="text-xs uppercase tracking-wide text-muted-foreground">
+              or use email
+            </span>
+            <span className="h-px flex-1 bg-border" />
+          </div>
+
+          <form className="space-y-4" onSubmit={onSubmit} noValidate>
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input

@@ -6,13 +6,13 @@ import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 
-const links: { label: string; to: "/" | "/extension"; hash?: string }[] = [
+const links: { label: string; to: "/"; hash?: string }[] = [
   { label: "Home", to: "/" as const },
   { label: "Features", to: "/" as const, hash: "features" },
   { label: "How It Works", to: "/" as const, hash: "how-it-works" },
   { label: "Security", to: "/" as const, hash: "security" },
-  { label: "Extension", to: "/extension" as const },
 ];
+
 
 export function SiteNavbar() {
   const [open, setOpen] = useState(false);
