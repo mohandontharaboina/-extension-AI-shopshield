@@ -52,7 +52,7 @@ function SignupPage() {
     }
     setErrors({});
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.password,
       options: {
@@ -65,9 +65,15 @@ function SignupPage() {
       toast.error(error.message);
       return;
     }
+    if (!data.session) {
+      toast.success("Account created — check your email to confirm, then sign in.");
+      navigate({ to: "/login" });
+      return;
+    }
     toast.success("Account created — welcome to ShopShield AI");
     navigate({ to: "/dashboard" });
   };
+
 
   return (
     <div className="hero-surface grid min-h-screen place-items-center px-4 py-12">
