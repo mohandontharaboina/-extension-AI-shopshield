@@ -39,7 +39,11 @@ export function SiteNavbar() {
         </div>
 
         <div className="hidden items-center gap-2 md:flex">
+          <Button asChild variant="ghost" size="sm">
+            <Link to="/extension">Extension</Link>
+          </Button>
           <ThemeToggle />
+
           {user ? (
             <Button asChild size="sm">
               <Link to="/dashboard">Dashboard</Link>

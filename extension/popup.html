@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>ShopShield AI</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="head">
+      <img src="icon.png" alt="" width="26" height="26" />
+      <span>ShopShield <b>AI</b></span>
+    </header>
+
+    <section id="login-view" hidden>
+      <p class="lead">Sign in to start continuous protection.</p>
+      <form id="login-form">
+        <label for="email">Email</label>
+        <input id="email" type="email" required autocomplete="username" />
+        <label for="password">Password</label>
+        <input id="password" type="password" required autocomplete="current-password" />
+        <p id="error" class="error" hidden></p>
+        <button type="submit" id="submit">Sign in</button>
+      </form>
+      <a id="signup-link" href="#" target="_blank" rel="noreferrer">Create an account</a>
+    </section>
+
+    <section id="status-view" hidden>
+      <div class="row">
+        <span class="dot"></span>
+        <div>
+          <div class="strong">Protection active</div>
+          <div class="muted" id="user-email"></div>
+        </div>
+      </div>
+      <div id="verdict" class="verdict">Checking this tab…</div>
+      <button id="recheck" class="secondary" type="button">Re-check this tab</button>
+      <button id="dashboard" class="secondary" type="button">Open dashboard</button>
+      <button id="signout" class="link" type="button">Sign out</button>
+    </section>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

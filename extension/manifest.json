@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "ShopShield AI — Fake Shopping Site Detector",
+  "version": "1.0.0",
+  "description": "Signs you in and continuously checks every website you open, alerting you with a red warning when a shopping site looks fake.",
+  "permissions": ["storage", "tabs", "alarms", "scripting", "notifications"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": { "48": "icon.png", "128": "icon.png" }
+  },
+  "background": { "service_worker": "background.js", "type": "module" },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": { "48": "icon.png", "128": "icon.png" }
+}
