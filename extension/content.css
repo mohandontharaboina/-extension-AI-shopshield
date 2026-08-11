@@ -1,0 +1,75 @@
+#shopshield-ai-alert-bar.shopshield-bar {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483647;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: #dc2626;
+  color: #fff;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  animation: shopshield-in 220ms ease-out;
+}
+
+#shopshield-ai-alert-bar.shopshield-bar--warn {
+  background: #b45309;
+}
+
+#shopshield-ai-alert-bar .shopshield-icon {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+}
+
+#shopshield-ai-alert-bar .shopshield-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+#shopshield-ai-alert-bar .shopshield-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+#shopshield-ai-alert-bar .shopshield-body {
+  margin-top: 3px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  opacity: 0.92;
+}
+
+#shopshield-ai-alert-bar .shopshield-close {
+  flex: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+#shopshield-ai-alert-bar .shopshield-close:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+@keyframes shopshield-in {
+  from { transform: translateY(14px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
