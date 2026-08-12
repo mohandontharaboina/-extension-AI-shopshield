@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Chrome, Download, ShieldAlert, ShieldCheck, LogIn, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteNavbar } from "@/components/SiteNavbar";
@@ -133,6 +133,8 @@ function ExtensionPage() {
           </Button>
         </div>
         {error ? <p className="mt-3 text-sm text-destructive">{error}</p> : null}
+
+        <ExtensionStatusCard />
 
         <div className="mt-14 grid gap-4 sm:grid-cols-2">
           {steps.map((step, index) => (
