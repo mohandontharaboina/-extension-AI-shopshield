@@ -50,3 +50,18 @@ function showAlert(data) {
 chrome.runtime.onMessage.addListener((message) => {
   if (message?.type === "SHOPSHIELD_ALERT") showAlert(message.payload);
 });
+
+/* Status bridge: lets the ShopShield web app confirm the extension is installed and signed in. */
+window.addEventListener("message", (event) => {
+  if (event.source !== window || event.data?.type !== "SHOPSHIELD_STATUS_REQUEST") return;
+  chrome.runtime.sendMessage({ type: "SHOPSHIELD_STATUS" }, (response) => {
+    void chrome.runtime.lastError;
+    window.postMessage(
+      {
+        type: "SHOPSHIELD_STATUS_RESPONSE",
+        payload: { installed: true, signedIn: Boolean(response?.signedIn), email: response?.email ?? null },
+      },
+      "*",
+    );
+  });
+});

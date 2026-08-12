@@ -108,6 +108,13 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 });
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (message?.type === "SHOPSHIELD_STATUS") {
+    (async () => {
+      const session = await getValidSession();
+      sendResponse({ signedIn: Boolean(session?.user), email: session?.user?.email ?? null });
+    })();
+    return true;
+  }
   if (message?.type === "SHOPSHIELD_RECHECK_ACTIVE") {
     (async () => {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });

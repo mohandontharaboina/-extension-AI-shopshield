@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Chrome, Download, ShieldAlert, ShieldCheck, LogIn, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteNavbar } from "@/components/SiteNavbar";
@@ -31,6 +31,56 @@ const steps = [
   { icon: LogIn, title: "Sign in once", body: "Click the ShopShield icon and sign in with the same account you use here." },
   { icon: RefreshCw, title: "Stay protected", body: "Every site you open is checked continuously in the background and saved to your scan history." },
 ];
+
+type ExtStatus = "checking" | "missing" | "signed-out" | "signed-in";
+
+function ExtensionStatusCard() {
+  const [status, setStatus] = useState<ExtStatus>("checking");
+  const [email, setEmail] = useState<string | null>(null);
+  const [nonce, setNonce] = useState(0);
+
+  useEffect(() => {
+    setStatus("checking");
+    let done = false;
+    const onMessage = (event: MessageEvent) => {
+      if (event.source !== window || (event.data as { type?: string })?.type !== "SHOPSHIELD_STATUS_RESPONSE") return;
+      const payload = (event.data as { payload: { signedIn: boolean; email: string | null } }).payload;
+      done = true;
+      setEmail(payload.email);
+      setStatus(payload.signedIn ? "signed-in" : "signed-out");
+    };
+    window.addEventListener("message", onMessage);
+    window.postMessage({ type: "SHOPSHIELD_STATUS_REQUEST" }, "*");
+    const timer = window.setTimeout(() => {
+      if (!done) setStatus("missing");
+    }, 1200);
+    return () => {
+      window.removeEventListener("message", onMessage);
+      window.clearTimeout(timer);
+    };
+  }, [nonce]);
+
+  const config = {
+    checking: { dot: "bg-muted-foreground", title: "Checking extension status…", body: "Looking for the ShopShield AI extension in this browser." },
+    missing: { dot: "bg-muted-foreground", title: "Extension not detected", body: "Install the extension below, then refresh this page." },
+    "signed-out": { dot: "bg-destructive", title: "Extension installed — signed out", body: "Open the ShopShield icon in your toolbar and sign in to start protection." },
+    "signed-in": { dot: "bg-success", title: "Extension signed in — protection active", body: email ? `Signed in as ${email}.` : "Every site you open is being checked in the background." },
+  }[status];
+
+  return (
+    <div className="mt-8 flex flex-wrap items-center gap-4 rounded-xl border border-border bg-card p-5">
+      <span className={`size-2.5 shrink-0 rounded-full ${config.dot}`} aria-hidden />
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-semibold">{config.title}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{config.body}</p>
+      </div>
+      <Button variant="outline" size="sm" onClick={() => setNonce((n) => n + 1)} disabled={status === "checking"}>
+        <RefreshCw className="size-4" />
+        Re-check
+      </Button>
+    </div>
+  );
+}
 
 function ExtensionPage() {
   const [error, setError] = useState<string | null>(null);
@@ -83,6 +133,8 @@ function ExtensionPage() {
           </Button>
         </div>
         {error ? <p className="mt-3 text-sm text-destructive">{error}</p> : null}
+
+        <ExtensionStatusCard />
 
         <div className="mt-14 grid gap-4 sm:grid-cols-2">
           {steps.map((step, index) => (

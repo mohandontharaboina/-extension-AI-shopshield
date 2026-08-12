@@ -11,6 +11,11 @@
       <span>ShopShield <b>AI</b></span>
     </header>
 
+    <div id="auth-pill" class="pill pill--out">
+      <span class="pill-dot"></span>
+      <span id="auth-pill-text">Checking sign-in status…</span>
+    </div>
+
     <section id="login-view" hidden>
       <p class="lead">Sign in to start continuous protection.</p>
       <form id="login-form">
@@ -32,6 +37,7 @@
           <div class="muted" id="user-email"></div>
         </div>
       </div>
+
       <div id="verdict" class="verdict">Checking this tab…</div>
       <button id="recheck" class="secondary" type="button">Re-check this tab</button>
       <button id="dashboard" class="secondary" type="button">Open dashboard</button>
