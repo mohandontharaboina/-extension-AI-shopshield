@@ -72,3 +72,21 @@ a { display: inline-block; margin-top: 10px; font-size: 12px; color: #60a5fa; }
 .verdict.safe { border-color: #16a34a55; color: #86efac; }
 .verdict.warn { border-color: #f59e0b55; color: #fcd34d; }
 .verdict.high { border-color: #dc262655; color: #fca5a5; }
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #24314a;
+  background: #111a2c;
+}
+.pill-dot { width: 8px; height: 8px; border-radius: 999px; background: #64748b; }
+.pill--in { border-color: #16a34a66; color: #86efac; }
+.pill--in .pill-dot { background: #22c55e; box-shadow: 0 0 0 4px rgba(34,197,94,.18); }
+.pill--out { border-color: #dc262666; color: #fca5a5; }
+.pill--out .pill-dot { background: #ef4444; box-shadow: 0 0 0 4px rgba(239,68,68,.18); }

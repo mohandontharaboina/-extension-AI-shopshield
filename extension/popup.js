@@ -8,6 +8,8 @@ const form = document.getElementById("login-form");
 const errorEl = document.getElementById("error");
 const submit = document.getElementById("submit");
 const verdict = document.getElementById("verdict");
+const pill = document.getElementById("auth-pill");
+const pillText = document.getElementById("auth-pill-text");
 
 document.getElementById("signup-link").href = `${APP_URL}/signup`;
 
@@ -31,6 +33,8 @@ async function renderVerdict() {
 async function render() {
   const session = await getValidSession();
   const signedIn = Boolean(session?.user);
+  pill.className = "pill " + (signedIn ? "pill--in" : "pill--out");
+  pillText.textContent = signedIn ? `Signed in — ${session.user.email ?? "protection active"}` : "Signed out — not protected";
   loginView.hidden = signedIn;
   statusView.hidden = !signedIn;
   if (signedIn) {
