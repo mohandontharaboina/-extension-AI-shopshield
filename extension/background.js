@@ -1,4 +1,4 @@
-import { analyzeUrl } from "./scan-engine.js";
+import { analyzeUrl, isShoppingUrl } from "./scan-engine.js";
 import { getValidSession, apiInsert } from "./auth.js";
 
 const SKIP = /^(chrome|edge|about|chrome-extension|devtools|view-source|file):/i;
@@ -71,6 +71,36 @@ async function checkTab(tabId, url, { force = false } = {}) {
     await persist(analysis, session.user.id);
   } catch (error) {
     console.warn("ShopShield: could not save scan", error);
+  }
+
+  // Advanced: auto-detect shopping pages (URL heuristics + page DOM signals)
+  const shopByUrl = isShoppingUrl(url);
+  const shopByPage = await new Promise((resolve) => {
+    let done = false;
+    const finish = (v) => { if (!done) { done = true; resolve(v); } };
+    setTimeout(() => finish(false), 800);
+    try {
+      chrome.tabs.sendMessage(tabId, { type: "SHOPSHIELD_DETECT_SHOP" }, (res) => {
+        void chrome.runtime.lastError;
+        finish(Boolean(res?.isShop));
+      });
+    } catch { finish(false); }
+  });
+
+  if (shopByUrl || shopByPage) {
+    chrome.tabs.sendMessage(
+      tabId,
+      {
+        type: "SHOPSHIELD_SCORE",
+        payload: {
+          classification: analysis.classification,
+          riskScore: analysis.riskScore,
+          trustScore: analysis.trustScore,
+          domain: analysis.domain,
+        },
+      },
+      () => void chrome.runtime.lastError,
+    );
   }
 
   if (analysis.classification !== "SAFE") {

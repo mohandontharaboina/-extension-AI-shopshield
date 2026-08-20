@@ -171,3 +171,26 @@ function analyzeUrl(rawUrl) {
 }
 
 export { analyzeUrl, parseUrl, classify, normalizeUrl };
+
+/* --- Shopping-site detection (URL heuristics) --- */
+const SHOP_HOST_HINTS = [
+  "shop","store","mall","cart","buy","bazaar","market","deals","outlet","retail","fashion","commerce",
+];
+const SHOP_PATH_HINTS = ["/product","/products","/cart","/checkout","/shop","/store","/item","/collections","/basket","/order","/dp/","/p/"];
+const KNOWN_SHOPS = [
+  "amazon.","flipkart.","myntra.","ajio.","meesho.","snapdeal.","nykaa.","ebay.","etsy.","walmart.","target.",
+  "aliexpress.","alibaba.","shein.","temu.","nike.","adidas.","zara.","bigbasket.","tatacliq.","croma.","reliancedigital.",
+];
+
+function isShoppingUrl(rawUrl) {
+  const url = parseUrl(rawUrl);
+  if (!url) return false;
+  const host = url.hostname.toLowerCase();
+  const path = url.pathname.toLowerCase();
+  if (KNOWN_SHOPS.some((s) => host.includes(s))) return true;
+  if (/\.(shop|store)$/.test(host)) return true;
+  if (SHOP_HOST_HINTS.some((h) => host.includes(h))) return true;
+  return SHOP_PATH_HINTS.some((p) => path.includes(p));
+}
+
+export { isShoppingUrl };
