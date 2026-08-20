@@ -73,3 +73,48 @@
   from { transform: translateY(14px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+#shopshield-ai-score-pill.shopshield-pill {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483646;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #0f172a;
+  color: #fff;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  animation: shopshield-in 220ms ease-out;
+}
+
+#shopshield-ai-score-pill .shopshield-pill-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #16a34a;
+}
+
+#shopshield-ai-score-pill.shopshield-pill--warn .shopshield-pill-dot { background: #f59e0b; }
+#shopshield-ai-score-pill.shopshield-pill--high .shopshield-pill-dot { background: #dc2626; }
+#shopshield-ai-score-pill.shopshield-pill--high { background: #450a0a; }
+#shopshield-ai-score-pill.shopshield-pill--warn { background: #431407; }
+
+#shopshield-ai-score-pill .shopshield-pill-close {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  opacity: 0.7;
+}
+
+#shopshield-ai-score-pill .shopshield-pill-close:hover { opacity: 1; }
