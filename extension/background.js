@@ -1,5 +1,6 @@
 import { analyzeUrl, isShoppingUrl } from "./scan-engine.js";
 import { getValidSession, apiInsert } from "./auth.js";
+import { APP_URL } from "./config.js";
 
 const SKIP = /^(chrome|edge|about|chrome-extension|devtools|view-source|file):/i;
 const RECHECK_MS = 5 * 60 * 1000;
@@ -67,8 +68,10 @@ async function checkTab(tabId, url, { force = false } = {}) {
 
   badge(tabId, analysis);
 
+  let scanId = null;
   try {
-    await persist(analysis, session.user.id);
+    const scan = await persist(analysis, session.user.id);
+    scanId = scan?.id ?? null;
   } catch (error) {
     console.warn("ShopShield: could not save scan", error);
   }
@@ -97,6 +100,7 @@ async function checkTab(tabId, url, { force = false } = {}) {
           riskScore: analysis.riskScore,
           trustScore: analysis.trustScore,
           domain: analysis.domain,
+          scanId,
         },
       },
       () => void chrome.runtime.lastError,
@@ -114,6 +118,7 @@ async function checkTab(tabId, url, { force = false } = {}) {
           domain: analysis.domain,
           recommendation: analysis.recommendation,
           threats: analysis.detectedThreats.slice(0, 3),
+          scanId,
         },
       },
       () => void chrome.runtime.lastError,
@@ -137,7 +142,15 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   for (const tab of tabs) if (tab.id != null && tab.url) void checkTab(tab.id, tab.url);
 });
 
+function reportUrl(scanId) {
+  return scanId ? `${APP_URL}/dashboard/report/${scanId}` : `${APP_URL}/dashboard/history`;
+}
+
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (message?.type === "SHOPSHIELD_OPEN_DETAILS") {
+    chrome.tabs.create({ url: reportUrl(message.scanId) });
+    return undefined;
+  }
   if (message?.type === "SHOPSHIELD_STATUS") {
     (async () => {
       const session = await getValidSession();
