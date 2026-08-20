@@ -118,3 +118,25 @@
 }
 
 #shopshield-ai-score-pill .shopshield-pill-close:hover { opacity: 1; }
+
+#shopshield-ai-score-pill .shopshield-pill-details,
+#shopshield-ai-alert-bar .shopshield-bar-details {
+  flex: none;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+#shopshield-ai-score-pill .shopshield-pill-details:hover,
+#shopshield-ai-alert-bar .shopshield-bar-details:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+#shopshield-ai-alert-bar .shopshield-bar-details { align-self: center; }

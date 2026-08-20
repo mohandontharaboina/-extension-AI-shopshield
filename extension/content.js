@@ -43,7 +43,15 @@ function showAlert(data) {
   close.textContent = "×";
   close.addEventListener("click", removeBar);
 
-  bar.append(icon, text, close);
+  const barDetails = document.createElement("button");
+  barDetails.className = "shopshield-bar-details";
+  barDetails.type = "button";
+  barDetails.textContent = "Scan details";
+  barDetails.addEventListener("click", () => {
+    chrome.runtime.sendMessage({ type: "SHOPSHIELD_OPEN_DETAILS", scanId: data.scanId }, () => void chrome.runtime.lastError);
+  });
+
+  bar.append(icon, text, barDetails, close);
   (document.body ?? document.documentElement).appendChild(bar);
 }
 
@@ -79,6 +87,14 @@ function showScore(data) {
   label.className = "shopshield-pill-label";
   label.textContent = `Risk ${data.riskScore}/100 · ${data.classification}`;
 
+  const details = document.createElement("button");
+  details.className = "shopshield-pill-details";
+  details.type = "button";
+  details.textContent = "Scan details";
+  details.addEventListener("click", () => {
+    chrome.runtime.sendMessage({ type: "SHOPSHIELD_OPEN_DETAILS", scanId: data.scanId }, () => void chrome.runtime.lastError);
+  });
+
   const close = document.createElement("button");
   close.className = "shopshield-pill-close";
   close.type = "button";
@@ -86,7 +102,7 @@ function showScore(data) {
   close.textContent = "×";
   close.addEventListener("click", () => pill.remove());
 
-  pill.append(dot, label, close);
+  pill.append(dot, label, details, close);
   (document.body ?? document.documentElement).appendChild(pill);
 }
 
