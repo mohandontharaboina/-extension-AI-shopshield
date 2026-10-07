@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Brain, Chrome, Gauge, Lock, ScanLine, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteNavbar } from "@/components/SiteNavbar";
+import heroImage from "@/assets/shopshield-hero.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -17,6 +18,8 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "AI-powered fraud detection for online shoppers. Scan a URL, get an instant risk verdict.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Landing,
@@ -37,26 +40,37 @@ function Landing() {
       <SiteNavbar />
 
       <main>
-        <section className="hero-surface border-b border-border">
-          <div className="mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 sm:py-28">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1 text-xs text-muted-foreground">
+        <section className="shopshield-hero relative isolate overflow-hidden border-b border-border">
+          <img
+            src={heroImage}
+            alt=""
+            width={1536}
+            height={1024}
+            fetchPriority="high"
+            className="shopshield-hero__image"
+          />
+          <div className="shopshield-hero__grid" aria-hidden="true" />
+          <div className="relative z-10 mx-auto flex min-h-[620px] max-w-7xl items-center px-4 py-20 sm:px-6 sm:py-24 lg:min-h-[680px] lg:px-8">
+            <div className="shopshield-hero__copy max-w-2xl">
+            <span className="shopshield-hero__badge inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs">
               <ShieldCheck className="size-3.5 text-primary" />
               AI-powered fraud detection
             </span>
-            <h1 className="mt-5 font-display text-4xl font-semibold tracking-tight text-balance sm:text-6xl">
-              See the Risk Before You Take the 
+            <h1 className="shopshield-hero__title mt-6 font-display text-4xl font-semibold text-balance sm:text-5xl lg:text-6xl">
+              See the <span className="text-gradient">Risk</span> Before You Take the <span className="text-gradient">Risk.</span>
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg">
+            <p className="shopshield-hero__subtitle mt-6 max-w-xl text-base sm:text-lg">
               Paste any store URL. ShopShield AI inspects the domain, security setup and commerce
               signals, then returns a risk score with a plain-English explanation.
             </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Button asChild size="lg">
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button asChild size="lg" className="shopshield-hero__primary-action shadow-glow">
                 <Link to="/signup">Start scanning free</Link>
               </Button>
-              <Button asChild size="lg" variant="outline">
+              <Button asChild size="lg" variant="outline" className="shopshield-hero__secondary-action">
                 <Link to="/login">Sign in</Link>
               </Button>
+            </div>
             </div>
           </div>
         </section>
