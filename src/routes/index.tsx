@@ -44,7 +44,7 @@ function Landing() {
               AI-powered fraud detection
             </span>
             <h1 className="mt-5 font-display text-4xl font-semibold tracking-tight text-balance sm:text-6xl">
-              Know if a shopping site is fake — before you pay
+              See the Risk Before You Take the 
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg">
               Paste any store URL. ShopShield AI inspects the domain, security setup and commerce
