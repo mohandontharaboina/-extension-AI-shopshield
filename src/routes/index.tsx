@@ -41,14 +41,6 @@ function Landing() {
 
       <main>
         <section className="shopshield-hero relative isolate overflow-hidden border-b border-border">
-          <img
-            src={heroImage}
-            alt=""
-            width={1536}
-            height={1024}
-            fetchPriority="high"
-            className="shopshield-hero__image"
-          />
           <div className="shopshield-hero__grid" aria-hidden="true" />
           <div className="relative z-10 mx-auto flex min-h-[620px] max-w-7xl items-center px-4 py-20 sm:px-6 sm:py-24 lg:min-h-[680px] lg:px-8">
             <div className="shopshield-hero__copy max-w-2xl">
@@ -73,6 +65,14 @@ function Landing() {
             </div>
             </div>
           </div>
+          <img
+            src={heroImage}
+            alt=""
+            width={1536}
+            height={1024}
+            fetchPriority="high"
+            className="shopshield-hero__image"
+          />
         </section>
 
         <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
