@@ -13,6 +13,10 @@ export const Route = createFileRoute("/_authenticated/dashboard/profile")({
   head: () => ({
     meta: [
       { title: "Profile — ShopShield AI" },
+      { property: "og:title", content: "Profile — ShopShield AI" },
+      { property: "og:description", content: "Manage your ShopShield AI account details and display name." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "description", content: "Manage your ShopShield AI account details and display name." },
     ],
   }),

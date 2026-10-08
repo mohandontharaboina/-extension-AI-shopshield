@@ -4,7 +4,9 @@ import { Environment, Lightformer } from "@react-three/drei";
 import { ExtrudeGeometry, Group, Shape } from "three";
 import { ShieldCheck } from "lucide-react";
 
-function Shield({ reducedMotion, colors }: { reducedMotion: boolean; colors: string[] }) {
+type LogoColors = [string, string, string];
+
+function Shield({ reducedMotion, colors }: { reducedMotion: boolean; colors: LogoColors }) {
   const group = useRef<Group>(null);
   const geometry = useMemo(() => {
     const shape = new Shape();
@@ -31,8 +33,8 @@ function Shield({ reducedMotion, colors }: { reducedMotion: boolean; colors: str
   return (
     <group ref={group} rotation={[0.08, -0.3, 0]}>
       <mesh geometry={geometry}>
-        <meshStandardMaterial color={colors[0]} metalness={0.6} roughness={0.24} />
-        <meshStandardMaterial color={colors[1]} metalness={0.8} roughness={0.18} />
+        <meshStandardMaterial attach="material-0" color={colors[0]} metalness={0.6} roughness={0.24} />
+        <meshStandardMaterial attach="material-1" color={colors[1]} metalness={0.8} roughness={0.18} />
       </mesh>
       {[1, -1].map((side) => (
         <group key={side} position={[0, 0, side * 0.19]} rotation-y={side === -1 ? Math.PI : 0}>
@@ -51,12 +53,16 @@ function Shield({ reducedMotion, colors }: { reducedMotion: boolean; colors: str
 }
 
 export default function ShieldLogo3D() {
-  const [colors, setColors] = useState<string[]>([]);
+  const [colors, setColors] = useState<LogoColors | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
   useEffect(() => {
     const readColors = () => {
       const css = getComputedStyle(document.documentElement);
-      setColors(["--logo-face", "--logo-edge", "--logo-check"].map((name) => css.getPropertyValue(name).trim()));
+      setColors([
+        css.getPropertyValue("--logo-face").trim(),
+        css.getPropertyValue("--logo-edge").trim(),
+        css.getPropertyValue("--logo-check").trim(),
+      ]);
     };
     readColors();
     const observer = new MutationObserver(readColors);
@@ -67,7 +73,7 @@ export default function ShieldLogo3D() {
     media.addEventListener("change", updateMotion);
     return () => { observer.disconnect(); media.removeEventListener("change", updateMotion); };
   }, []);
-  if (colors.length === 0) return <ShieldCheck className="size-4.5" />;
+  if (!colors) return <ShieldCheck className="size-4.5" />;
   return (
     <Canvas
       orthographic camera={{ position: [0, 0, 5], zoom: 14 }}
