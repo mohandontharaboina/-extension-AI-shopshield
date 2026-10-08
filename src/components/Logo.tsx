@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 const ShieldLogo3D = lazy(() => import("@/components/ShieldLogo3D"));
 
 class LogoFallback extends Component<{ children: ReactNode }, { failed: boolean }> {
-  state = { failed: false };
+  override state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }
-  render() { return this.state.failed ? <ShieldCheck className="size-4.5" /> : this.props.children; }
+  override render() { return this.state.failed ? <ShieldCheck className="size-4.5" /> : this.props.children; }
 }
 
 export function Logo({ className, compact = false }: { className?: string; compact?: boolean }) {
