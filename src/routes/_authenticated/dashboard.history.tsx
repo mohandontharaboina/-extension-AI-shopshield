@@ -19,6 +19,10 @@ export const Route = createFileRoute("/_authenticated/dashboard/history")({
   head: () => ({
     meta: [
       { title: "Scan history — ShopShield AI" },
+      { property: "og:title", content: "Scan history — ShopShield AI" },
+      { property: "og:description", content: "Search and filter every website you have analysed with ShopShield AI." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "description", content: "Search and filter every website you have analysed with ShopShield AI." },
     ],
   }),

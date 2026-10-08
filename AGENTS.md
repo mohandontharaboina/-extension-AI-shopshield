@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Render the shared brand shield using a lazily loaded, client-mounted React Three Fiber canvas with an icon fallback; this keeps SSR and existing navigation functional when WebGL is unavailable.
+- Keep shield material colors in semantic global CSS tokens and honor reduced-motion preferences; this preserves theming and accessibility independently of brand values.

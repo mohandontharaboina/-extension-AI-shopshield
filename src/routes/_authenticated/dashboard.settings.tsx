@@ -13,6 +13,10 @@ export const Route = createFileRoute("/_authenticated/dashboard/settings")({
   head: () => ({
     meta: [
       { title: "Settings — ShopShield AI" },
+      { property: "og:title", content: "Settings — ShopShield AI" },
+      { property: "og:description", content: "Update your password, alert preferences and appearance settings." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "description", content: "Update your password, alert preferences and appearance settings." },
     ],
   }),
