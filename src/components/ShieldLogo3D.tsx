@@ -1,13 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useEffect, useMemo, useState } from "react";
+import { Canvas } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
-import { ExtrudeGeometry, Group, Shape } from "three";
+import { ExtrudeGeometry, Shape } from "three";
 import { ShieldCheck } from "lucide-react";
 
 type LogoColors = [string, string, string];
 
-function Shield({ reducedMotion, colors }: { reducedMotion: boolean; colors: LogoColors }) {
-  const group = useRef<Group>(null);
+function Shield({ colors }: { colors: LogoColors }) {
   const geometry = useMemo(() => {
     const shape = new Shape();
     shape.moveTo(0, 0.9);
@@ -25,13 +24,8 @@ function Shield({ reducedMotion, colors }: { reducedMotion: boolean; colors: Log
     return result;
   }, []);
   useEffect(() => () => geometry.dispose(), [geometry]);
-  useFrame((_, delta) => {
-    if (group.current && !reducedMotion) {
-      group.current.rotation.y += Math.min(delta, 0.05) * (Math.PI * 2 / 60);
-    }
-  });
   return (
-    <group ref={group} rotation={[0.08, -0.3, 0]}>
+    <group rotation={[0.08, -0.3, 0]}>
       <mesh geometry={geometry}>
         <meshStandardMaterial attach="material-0" color={colors[0]} metalness={0.6} roughness={0.24} />
         <meshStandardMaterial attach="material-1" color={colors[1]} metalness={0.8} roughness={0.18} />
@@ -54,7 +48,6 @@ function Shield({ reducedMotion, colors }: { reducedMotion: boolean; colors: Log
 
 export default function ShieldLogo3D() {
   const [colors, setColors] = useState<LogoColors | null>(null);
-  const [reducedMotion, setReducedMotion] = useState(false);
   useEffect(() => {
     const readColors = () => {
       const css = getComputedStyle(document.documentElement);
@@ -67,18 +60,14 @@ export default function ShieldLogo3D() {
     readColors();
     const observer = new MutationObserver(readColors);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updateMotion = () => setReducedMotion(media.matches);
-    updateMotion();
-    media.addEventListener("change", updateMotion);
-    return () => { observer.disconnect(); media.removeEventListener("change", updateMotion); };
+    return () => { observer.disconnect(); };
   }, []);
   if (!colors) return <ShieldCheck className="size-4.5" />;
   return (
     <Canvas
       orthographic camera={{ position: [0, 0, 5], zoom: 14 }}
       dpr={[1, 2]} gl={{ alpha: true, antialias: true }}
-      frameloop={reducedMotion ? "demand" : "always"}
+      frameloop="demand"
       fallback={<ShieldCheck className="size-4.5" />}
     >
       <ambientLight intensity={0.8} />
@@ -87,7 +76,7 @@ export default function ShieldLogo3D() {
         <Lightformer intensity={3} position={[0, 4, 3]} scale={[5, 5, 1]} />
         <Lightformer intensity={2} color={colors[1]} position={[-3, 0, 2]} rotation-y={Math.PI / 3} scale={[3, 4, 1]} />
       </Environment>
-      <Shield reducedMotion={reducedMotion} colors={colors} />
+      <Shield colors={colors} />
     </Canvas>
   );
 }
