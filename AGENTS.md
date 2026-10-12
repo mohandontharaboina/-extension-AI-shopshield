@@ -11,3 +11,4 @@
 
 - Render the shared brand shield using a lazily loaded, client-mounted React Three Fiber canvas with an icon fallback; this keeps SSR and existing navigation functional when WebGL is unavailable.
 - Keep shield material colors in semantic global CSS tokens and honor reduced-motion preferences; this preserves theming and accessibility independently of brand values.
+- Route browser-extension scans through an authenticated CORS API using the caller's bearer token, so web and extension scans share one analysis path without embedding privileged credentials.

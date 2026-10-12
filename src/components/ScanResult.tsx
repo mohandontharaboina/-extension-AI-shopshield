@@ -104,8 +104,11 @@ export function ScanResult({
       <div className="panel p-5 sm:p-6">
         <h3 className="flex items-center gap-2 font-display text-base font-semibold">
           <Sparkles className="size-4 text-primary" />
-          AI explanation
+          Risk analysis
         </h3>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Demonstration results are based on URL heuristics. Domain age, reputation, store policies and payment details are not live-verified, and the score is not a probability of fraud.
+        </p>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{analysis.aiExplanation}</p>
 
         <div

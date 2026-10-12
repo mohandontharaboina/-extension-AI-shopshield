@@ -1,10 +1,16 @@
-import { analyzeUrl, isShoppingUrl } from "./scan-engine.js";
-import { getValidSession, apiInsert } from "./auth.js";
+import { isShoppingUrl } from "./scan-engine.js";
+import { getValidSession, apiScan } from "./auth.js";
 import { APP_URL } from "./config.js";
 
 const SKIP = /^(chrome|edge|about|chrome-extension|devtools|view-source|file):/i;
 const RECHECK_MS = 5 * 60 * 1000;
 const lastChecked = new Map();
+const inFlight = new Set();
+const scanStorageKey = (tabId) => `shopshield_scan_${tabId}`;
+
+async function saveTabState(tabId, state) {
+  await chrome.storage.local.set({ [scanStorageKey(tabId)]: { ...state, tabId, checkedAt: Date.now() } });
+}
 
 function badge(tabId, analysis) {
   const color =
@@ -13,68 +19,58 @@ function badge(tabId, analysis) {
   chrome.action.setBadgeText({ tabId, text: String(analysis.riskScore) });
 }
 
-async function persist(analysis, userId) {
-  const rows = await apiInsert("website_scans", {
-    user_id: userId,
-    url: analysis.url,
-    domain: analysis.domain,
-    website_name: analysis.websiteName,
-    risk_score: analysis.riskScore,
-    trust_score: analysis.trustScore,
-    classification: analysis.classification,
-    domain_age_days: analysis.domainAgeDays,
-    https_enabled: analysis.httpsEnabled,
-    ai_explanation: analysis.aiExplanation,
-    recommendation: analysis.recommendation,
-    details: JSON.parse(JSON.stringify(analysis)),
-  });
-  const scan = Array.isArray(rows) ? rows[0] : rows;
-  if (!scan?.id) return null;
-  await apiInsert(
-    "risk_indicators",
-    analysis.indicators.map((indicator) => ({
-      scan_id: scan.id,
-      user_id: userId,
-      name: indicator.name,
-      category: indicator.category,
-      status: indicator.status,
-      weight: indicator.weight,
-      detail: indicator.detail,
-    })),
-  );
-  return scan;
-}
-
 /** Analyses one tab URL, stores the scan and alerts the page when unsafe. */
 async function checkTab(tabId, url, { force = false } = {}) {
-  if (!url || SKIP.test(url)) return;
+  if (!url || SKIP.test(url)) {
+    await saveTabState(tabId, { status: "unsupported", url: url ?? "" });
+    return;
+  }
+
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(url);
+  } catch {
+    await saveTabState(tabId, { status: "unsupported", url });
+    return;
+  }
+  if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+    await saveTabState(tabId, { status: "unsupported", url });
+    return;
+  }
+
   const session = await getValidSession();
   if (!session?.user?.id) {
     chrome.action.setBadgeText({ tabId, text: "" });
+    await saveTabState(tabId, { status: "signed-out", url });
     return;
   }
 
-  const key = `${tabId}:${new URL(url).origin}`;
+  const key = parsedUrl.href;
   const previous = lastChecked.get(key);
   if (!force && previous && Date.now() - previous < RECHECK_MS) return;
-  lastChecked.set(key, Date.now());
+  if (inFlight.has(key)) return;
+  inFlight.add(key);
+  await saveTabState(tabId, { status: "analyzing", url });
 
   let analysis;
+  let scanId;
   try {
-    analysis = analyzeUrl(url);
-  } catch {
+    const scan = await apiScan(url);
+    analysis = scan.details;
+    scanId = scan.id;
+    if (!analysis || !scanId) throw new Error("The scan result was incomplete.");
+    lastChecked.set(key, Date.now());
+    await saveTabState(tabId, { status: "complete", url, analysis, scanId });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "The scan could not be completed.";
+    await saveTabState(tabId, { status: "failed", url, error: message });
+    console.warn("ShopShield: scan failed", message);
     return;
+  } finally {
+    inFlight.delete(key);
   }
 
   badge(tabId, analysis);
-
-  let scanId = null;
-  try {
-    const scan = await persist(analysis, session.user.id);
-    scanId = scan?.id ?? null;
-  } catch (error) {
-    console.warn("ShopShield: could not save scan", error);
-  }
 
   // Advanced: auto-detect shopping pages (URL heuristics + page DOM signals)
   const shopByUrl = isShoppingUrl(url);
@@ -163,6 +159,23 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (tab?.id != null && tab.url) await checkTab(tab.id, tab.url, { force: true });
       sendResponse({ ok: true });
+    })();
+    return true;
+  }
+  if (message?.type === "SHOPSHIELD_GET_ACTIVE_SCAN") {
+    (async () => {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (tab?.id == null || !tab.url) {
+        sendResponse({ status: "unsupported", url: "" });
+        return;
+      }
+      const stored = (await chrome.storage.local.get(scanStorageKey(tab.id)))[scanStorageKey(tab.id)];
+      if (stored?.url === tab.url && stored.status !== "analyzing") {
+        sendResponse(stored);
+        return;
+      }
+      void checkTab(tab.id, tab.url);
+      sendResponse({ status: "analyzing", url: tab.url });
     })();
     return true;
   }

@@ -72,7 +72,7 @@ function ScanPage() {
       <div>
         <h1 className="font-display text-2xl font-semibold">Website scanner</h1>
         <p className="text-sm text-muted-foreground">
-          Our model evaluates 15 fraud signals across URL, domain, security and commerce features.
+          A URL-based demonstration analysis checks risk signals. Domain age, reputation and store details are estimates, not live verification.
         </p>
       </div>
 
