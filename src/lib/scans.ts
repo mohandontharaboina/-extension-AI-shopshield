@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import { analyzeUrl, type Classification, type ScanAnalysis } from "@/lib/scan-engine";
+import { type Classification, type ScanAnalysis } from "@/lib/scan-engine";
 
 export interface ScanRow {
   id: string;

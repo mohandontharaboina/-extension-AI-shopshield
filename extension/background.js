@@ -45,7 +45,7 @@ async function checkTab(tabId, url, { force = false } = {}) {
     return;
   }
 
-  const key = parsedUrl.href;
+  const key = `${tabId}:${parsedUrl.href}`;
   const previous = lastChecked.get(key);
   if (!force && previous && Date.now() - previous < RECHECK_MS) return;
   if (inFlight.has(key)) return;
@@ -123,7 +123,7 @@ async function checkTab(tabId, url, { force = false } = {}) {
 }
 
 chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
-  if (info.status === "complete" && tab.url) void checkTab(tabId, tab.url);
+  if ((info.status === "complete" || info.url) && tab.url) void checkTab(tabId, tab.url);
 });
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {

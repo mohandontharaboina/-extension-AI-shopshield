@@ -23,6 +23,7 @@ import { Route as AuthenticatedDashboardProfileRouteImport } from './routes/_aut
 import { Route as AuthenticatedDashboardReportsRouteImport } from './routes/_authenticated/dashboard.reports'
 import { Route as AuthenticatedDashboardScanRouteImport } from './routes/_authenticated/dashboard.scan'
 import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
+import { Route as ApiPublicWebsiteScanRouteImport } from './routes/api/public/website-scan'
 import { Route as AuthenticatedDashboardReportIdRouteImport } from './routes/_authenticated/dashboard.report.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -100,6 +101,11 @@ const AuthenticatedDashboardSettingsRoute =
     path: '/settings',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const ApiPublicWebsiteScanRoute = ApiPublicWebsiteScanRouteImport.update({
+  id: '/api/public/website-scan',
+  path: '/api/public/website-scan',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedDashboardReportIdRoute =
   AuthenticatedDashboardReportIdRouteImport.update({
     id: '/report/$id',
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/reports': typeof AuthenticatedDashboardReportsRoute
   '/dashboard/scan': typeof AuthenticatedDashboardScanRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/api/public/website-scan': typeof ApiPublicWebsiteScanRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/report/$id': typeof AuthenticatedDashboardReportIdRoute
 }
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/dashboard/reports': typeof AuthenticatedDashboardReportsRoute
   '/dashboard/scan': typeof AuthenticatedDashboardScanRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/api/public/website-scan': typeof ApiPublicWebsiteScanRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/report/$id': typeof AuthenticatedDashboardReportIdRoute
 }
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/reports': typeof AuthenticatedDashboardReportsRoute
   '/_authenticated/dashboard/scan': typeof AuthenticatedDashboardScanRoute
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/api/public/website-scan': typeof ApiPublicWebsiteScanRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/dashboard/report/$id': typeof AuthenticatedDashboardReportIdRoute
 }
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/dashboard/reports'
     | '/dashboard/scan'
     | '/dashboard/settings'
+    | '/api/public/website-scan'
     | '/dashboard/'
     | '/dashboard/report/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -186,6 +196,7 @@ export interface FileRouteTypes {
     | '/dashboard/reports'
     | '/dashboard/scan'
     | '/dashboard/settings'
+    | '/api/public/website-scan'
     | '/dashboard'
     | '/dashboard/report/$id'
   id:
@@ -203,6 +214,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/reports'
     | '/_authenticated/dashboard/scan'
     | '/_authenticated/dashboard/settings'
+    | '/api/public/website-scan'
     | '/_authenticated/dashboard/'
     | '/_authenticated/dashboard/report/$id'
   fileRoutesById: FileRoutesById
@@ -215,6 +227,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
+  ApiPublicWebsiteScanRoute: typeof ApiPublicWebsiteScanRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -317,6 +330,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardSettingsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/api/public/website-scan': {
+      id: '/api/public/website-scan'
+      path: '/api/public/website-scan'
+      fullPath: '/api/public/website-scan'
+      preLoaderRoute: typeof ApiPublicWebsiteScanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/dashboard/report/$id': {
       id: '/_authenticated/dashboard/report/$id'
       path: '/report/$id'
@@ -372,6 +392,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
+  ApiPublicWebsiteScanRoute: ApiPublicWebsiteScanRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

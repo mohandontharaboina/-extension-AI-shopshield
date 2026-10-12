@@ -42,7 +42,10 @@ function ScanPage() {
   const [result, setResult] = useState<{ analysis: ScanAnalysis; id: string } | null>(null);
 
   const mutation = useMutation({
-    mutationFn: async (value: string) => runScan(value, user!.id),
+    mutationFn: async (value: string) => {
+      if (!user?.id) throw new Error("Please sign in again to scan and save this website.");
+      return runScan(value, user.id);
+    },
     onSuccess: (row) => {
       setResult({ analysis: rowAnalysis(row), id: row.id });
       queryClient.invalidateQueries({ queryKey: ["scans"] });
