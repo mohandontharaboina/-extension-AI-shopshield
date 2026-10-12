@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import { analyzeUrl, type Classification, type ScanAnalysis } from "@/lib/scan-engine";
+import { type Classification, type ScanAnalysis } from "@/lib/scan-engine";
 
 export interface ScanRow {
   id: string;
@@ -47,44 +47,25 @@ export async function getScan(id: string): Promise<ScanRow | null> {
  * Swap `analyzeUrl` for a call to a real ML API here and nothing else changes.
  */
 export async function runScan(rawUrl: string, userId: string): Promise<ScanRow> {
-  const analysis = analyzeUrl(rawUrl);
+  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+  const accessToken = sessionData.session?.access_token;
+  if (sessionError || !accessToken || sessionData.session?.user.id !== userId) {
+    throw new Error("Your sign-in has expired. Please sign in and try again.");
+  }
 
-  const { data, error } = await supabase
-    .from("website_scans")
-    .insert({
-      user_id: userId,
-      url: analysis.url,
-      domain: analysis.domain,
-      website_name: analysis.websiteName,
-      risk_score: analysis.riskScore,
-      trust_score: analysis.trustScore,
-      classification: analysis.classification,
-      domain_age_days: analysis.domainAgeDays,
-      https_enabled: analysis.httpsEnabled,
-      ai_explanation: analysis.aiExplanation,
-      recommendation: analysis.recommendation,
-      details: JSON.parse(JSON.stringify(analysis)),
-    })
-    .select("*")
-    .single();
-  if (error) throw error;
-
-  const row = data as unknown as ScanRow;
-
-  const { error: indicatorError } = await supabase.from("risk_indicators").insert(
-    analysis.indicators.map((indicator) => ({
-      scan_id: row.id,
-      user_id: userId,
-      name: indicator.name,
-      category: indicator.category,
-      status: indicator.status,
-      weight: indicator.weight,
-      detail: indicator.detail,
-    })),
-  );
-  if (indicatorError) throw indicatorError;
-
-  return row;
+  const response = await fetch("/api/public/website-scan", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ url: rawUrl, source: "manual_dashboard" }),
+  });
+  const body = (await response.json().catch(() => null)) as { scan?: unknown; error?: string } | null;
+  if (!response.ok || !body?.scan) {
+    throw new Error(body?.error ?? "Scan failed. Please try again.");
+  }
+  return body.scan as ScanRow;
 }
 
 export async function deleteScan(id: string) {

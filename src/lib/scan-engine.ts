@@ -325,12 +325,12 @@ export function analyzeUrl(rawUrl: string): ScanAnalysis {
 
   const aiExplanation =
     classification === "SAFE"
-      ? `Our model scored ${bareHost} at ${riskScore}/100 risk. The domain has an established registration history, serves content over a valid TLS certificate, and publishes the trust pages (contact, privacy and refund policy) that legitimate retailers maintain. No brand-impersonation or payment-redirection patterns were found.`
+      ? `The demonstration URL analysis assigned ${bareHost} a risk score of ${riskScore}/100. Its URL matched established-retailer patterns, with no brand-impersonation or payment-redirection patterns inferred from the address.`
       : classification === "SUSPICIOUS"
-        ? `Our model scored ${bareHost} at ${riskScore}/100 risk. Several features associated with low-quality or short-lived storefronts were detected${
+        ? `The demonstration URL analysis assigned ${bareHost} a risk score of ${riskScore}/100. Several URL features associated with low-quality or short-lived storefronts were detected${
             detectedThreats.length ? `, notably ${detectedThreats.slice(0, 3).join(", ")}` : ""
           }. The site is not conclusively fraudulent, but the combination of a young domain profile and missing trust pages places it well above the safe baseline.`
-        : `Our model scored ${bareHost} at ${riskScore}/100 risk. The URL and domain profile match patterns commonly seen in fraudulent shopping sites${
+        : `The demonstration URL analysis assigned ${bareHost} a risk score of ${riskScore}/100. The URL and domain name match patterns often associated with fraudulent shopping sites${
             detectedThreats.length ? `: ${detectedThreats.slice(0, 4).join(", ")}` : ""
           }. Multiple high-weight fraud features fired simultaneously, which historically correlates strongly with scam storefronts.`;
 

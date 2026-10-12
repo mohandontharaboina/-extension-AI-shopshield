@@ -42,7 +42,10 @@ function ScanPage() {
   const [result, setResult] = useState<{ analysis: ScanAnalysis; id: string } | null>(null);
 
   const mutation = useMutation({
-    mutationFn: async (value: string) => runScan(value, user!.id),
+    mutationFn: async (value: string) => {
+      if (!user?.id) throw new Error("Please sign in again to scan and save this website.");
+      return runScan(value, user.id);
+    },
     onSuccess: (row) => {
       setResult({ analysis: rowAnalysis(row), id: row.id });
       queryClient.invalidateQueries({ queryKey: ["scans"] });
@@ -72,7 +75,7 @@ function ScanPage() {
       <div>
         <h1 className="font-display text-2xl font-semibold">Website scanner</h1>
         <p className="text-sm text-muted-foreground">
-          Our model evaluates 15 fraud signals across URL, domain, security and commerce features.
+          A URL-based demonstration analysis checks risk signals. Domain age, reputation and store details are estimates, not live verification.
         </p>
       </div>
 

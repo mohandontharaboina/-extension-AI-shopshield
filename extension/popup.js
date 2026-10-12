@@ -1,5 +1,4 @@
 import { signIn, signOut, getValidSession } from "./auth.js";
-import { analyzeUrl } from "./scan-engine.js";
 import { APP_URL } from "./config.js";
 
 const loginView = document.getElementById("login-view");
@@ -14,19 +13,38 @@ const pillText = document.getElementById("auth-pill-text");
 document.getElementById("signup-link").href = `${APP_URL}/signup`;
 
 async function renderVerdict() {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab?.url || !/^https?:/i.test(tab.url)) {
-    verdict.textContent = "No website to check in this tab.";
+  const status = await chrome.runtime.sendMessage({ type: "SHOPSHIELD_GET_ACTIVE_SCAN" }).catch(() => null);
+  const report = document.getElementById("report");
+  report.hidden = true;
+  if (!status || status.status === "unsupported") {
+    verdict.className = "verdict";
+    verdict.textContent = "No supported website is open in this tab.";
     return;
   }
-  try {
-    const analysis = analyzeUrl(tab.url);
+  if (status.status === "signed-out") {
+    verdict.className = "verdict";
+    verdict.textContent = "Sign in to scan and save this website.";
+    return;
+  }
+  if (status.status === "analyzing") {
+    verdict.className = "verdict";
+    verdict.textContent = `Analyzing ${new URL(status.url).hostname}…`;
+    window.setTimeout(() => void renderVerdict(), 900);
+    return;
+  }
+  if (status.status === "failed") {
+    verdict.className = "verdict high";
+    verdict.textContent = `Scan failed: ${status.error || "Please try again."}`;
+    return;
+  }
+  if (status.status === "complete" && status.analysis) {
+    const analysis = status.analysis;
     verdict.className =
       "verdict " +
       (analysis.classification === "SAFE" ? "safe" : analysis.classification === "SUSPICIOUS" ? "warn" : "high");
-    verdict.textContent = `${analysis.domain} — ${analysis.classification} (risk ${analysis.riskScore}/100)`;
-  } catch {
-    verdict.textContent = "This page cannot be analysed.";
+    verdict.textContent = `${analysis.domain} — ${analysis.classification} (risk ${analysis.riskScore}/100) · ${analysis.httpsEnabled ? "HTTPS" : "No HTTPS"}`;
+    report.hidden = false;
+    report.dataset.scanId = status.scanId;
   }
 }
 
@@ -69,6 +87,11 @@ document.getElementById("recheck").addEventListener("click", async () => {
 
 document.getElementById("dashboard").addEventListener("click", () => {
   chrome.tabs.create({ url: `${APP_URL}/dashboard` });
+});
+
+document.getElementById("report").addEventListener("click", (event) => {
+  const scanId = event.currentTarget.dataset.scanId;
+  chrome.runtime.sendMessage({ type: "SHOPSHIELD_OPEN_DETAILS", scanId }, () => void chrome.runtime.lastError);
 });
 
 document.getElementById("signout").addEventListener("click", async () => {

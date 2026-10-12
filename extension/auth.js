@@ -1,4 +1,4 @@
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+import { APP_URL, SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
 const STORAGE_KEY = "shopshield_session";
 
@@ -59,20 +59,34 @@ export async function getValidSession() {
   return session;
 }
 
-export async function apiInsert(table, rows) {
+export async function apiScan(url) {
   const session = await getValidSession();
   if (!session) throw new Error("Not signed in");
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
-    method: "POST",
-    headers: {
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${session.access_token}`,
-      "Content-Type": "application/json",
-      Prefer: "return=representation",
-    },
-    body: JSON.stringify(rows),
-  });
-  const body = await res.json();
-  if (!res.ok) throw new Error(body.message || "Request failed");
-  return body;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12000);
+  try {
+    const res = await fetch(`${APP_URL}/api/public/website-scan`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${session.access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ url, source: "automatic_extension" }),
+      signal: controller.signal,
+    });
+    const body = await res.json().catch(() => null);
+    if (res.status === 401) {
+      await writeSession(null);
+      throw new Error("Your session expired. Sign in again to save scans.");
+    }
+    if (!res.ok || !body?.scan) throw new Error(body?.error || "The scan could not be completed.");
+    return body.scan;
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error("The scan timed out. Check your connection and try again.");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
